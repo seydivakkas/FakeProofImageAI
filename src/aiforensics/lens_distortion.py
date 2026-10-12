@@ -105,13 +105,41 @@ def undistort_pixels(observed_px,K,coefficients, iterations=25, atol=1e-10):
     d=_coefficients(coefficients)
     if np.max(np.linalg.norm(src,axis=1)) > 3.0:
         raise LensGeometryError("points outside supported normalized field")
-    # cv2.undistortPointsIter is the independent upstream 5-coefficient solver.
-    # Explicit round-trip verifies convergence, unlike a fixed iteration guess.
+    # Some OpenCV Python distributions do not expose undistortPointsIter.
+    # Use a checked Newton inversion in that case rather than failing at import.
     k=_camera(K)
-    uv=cv2.undistortPointsIter(np.asarray(observed_px,dtype=np.float64).reshape(-1,1,2),
-        k,d.reshape(-1,1),None,None,
-        (cv2.TERM_CRITERIA_COUNT | cv2.TERM_CRITERIA_EPS,int(iterations),float(atol)))
-    n=np.asarray(uv,dtype=np.float64).reshape(-1,2)
+    if hasattr(cv2, "undistortPointsIter"):
+        uv=cv2.undistortPointsIter(
+            np.asarray(observed_px,dtype=np.float64).reshape(-1,1,2),
+            k,d.reshape(-1,1),None,None,
+            (cv2.TERM_CRITERIA_COUNT | cv2.TERM_CRITERIA_EPS,int(iterations),float(atol)))
+        n=np.asarray(uv,dtype=np.float64).reshape(-1,2)
+    else:
+        n=src.copy()
+        k1,k2,p1,p2,k3=d
+        for _ in range(int(iterations)):
+            x,y=n[:,0],n[:,1]
+            rr=x*x+y*y
+            g=1+k1*rr+k2*rr*rr+k3*rr**3
+            h=2*k1+4*k2*rr+6*k3*rr*rr
+            j11=g+h*x*x+2*p1*y+6*p2*x
+            j22=g+h*y*y+6*p1*y+2*p2*x
+            j12=h*x*y+2*p1*x+2*p2*y
+            det=j11*j22-j12*j12
+            if not np.all(np.isfinite(det)) or np.any(det<=1e-10):
+                raise LensGeometryError("undistortion non-injective or ill-conditioned")
+            res=distort_normalized(n,d)-src
+            du=(j22*res[:,0]-j12*res[:,1])/det
+            dv=(j11*res[:,1]-j12*res[:,0])/det
+            step=np.column_stack([du,dv])
+            # Damp large updates; keep intermediate iterates inside the tested field.
+            step_len=np.linalg.norm(step,axis=1)
+            step*=np.minimum(1.0,0.5/np.maximum(step_len,1e-20))[:,None]
+            n-=step
+            if not np.all(np.isfinite(n)) or np.any(np.linalg.norm(n,axis=1)>3.5):
+                raise LensGeometryError("undistortion diverged")
+            if np.max(np.linalg.norm(res,axis=1))<=float(atol):
+                break
     if not np.isfinite(n).all():
         raise LensGeometryError("undistortion did not converge to finite points")
     inverse_residual=np.linalg.norm(distort_normalized(n,d)-src,axis=1)

@@ -247,3 +247,18 @@ def test_rectified_preview_saved(scene,tmp_path):
 def test_holdout_baseline_better_after_correction(scene):
     result=analyze_manifest(scene[0])
     assert result['holdout_uncorrected_rmse_px']>result['holdout_rmse_px']*15
+
+
+def test_inverse_fallback_without_opencv_iter(monkeypatch):
+    # Match CI environments whose cv2 Python bindings omit undistortPointsIter.
+    monkeypatch.delattr(cv2, "undistortPointsIter", raising=False)
+    K=np.array([[860,0,640],[0,850,360],[0,0,1]],float)
+    xs=np.array([(x,y) for x in np.linspace(140,1110,11) for y in np.linspace(85,620,7)])
+    d=[-.27,.065,.008,-.006,-.015]
+    got=undistort_pixels(distort_pixels(xs,K,d),K,d)
+    assert np.max(np.linalg.norm(got-xs,axis=1))<1e-5
+
+def test_fallback_rejects_noninvertible(monkeypatch):
+    monkeypatch.delattr(cv2, "undistortPointsIter", raising=False)
+    with pytest.raises(LensGeometryError):
+        undistort_pixels([[1800,800]],[[920,0,640],[0,915,360],[0,0,1]],[-1.8,0,0,0,0],iterations=4)
