@@ -1,0 +1,11 @@
+{
+  "capture_type": "real_camera",
+  "image": "official_photograph_missing.jpg",
+  "image_sha256": null,
+  "image_shape_hw": [480,640],
+  "source": "Official York Urban Dataset -- only example structure; NOT ACQUIRED",
+  "capture_and_calibration_provenance": "Not available; intentionally no fake measurement",
+  "known_intrinsics_K": null,
+  "train_orthogonal_groups": [],
+  "holdout_orthogonal_groups": []
+}

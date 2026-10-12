@@ -1,0 +1,9 @@
+{
+  "source": "Provide original real photographic dataset and frame identifier",
+  "capture_and_calibration_provenance": "Provide independently calibrated K, raw/rectified camera model and labeling procedure",
+  "image": "real_frame.jpg",
+  "image_shape_hw": [480, 640],
+  "known_intrinsics_K": [[null, 0, null], [0, null, null], [0, 0, 1]],
+  "train_orthogonal_groups": [[], [], []],
+  "holdout_orthogonal_groups": [[], [], []]
+}

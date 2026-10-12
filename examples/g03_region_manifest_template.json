@@ -1,0 +1,17 @@
+{
+  "image": "YOUR_PHOTO.jpg",
+  "regions": [
+    {
+      "region_id": "ground_plane",
+      "plane_class": "floor",
+      "annotation_source": "human_verified",
+      "polygon_xy": [[40,300],[600,300],[600,460],[40,460]]
+    },
+    {
+      "region_id": "building_front",
+      "plane_class": "facade",
+      "annotation_source": "human_verified",
+      "polygon_xy": [[80,25],[540,25],[540,270],[80,270]]
+    }
+  ]
+}
