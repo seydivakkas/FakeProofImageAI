@@ -115,7 +115,7 @@ def test_output_roundtrip_and_hash(tmp_path):
     source = tmp_path/"in.json"
     source.write_text(json.dumps(fixture(record())))
     saved = run_explainable_manifest(source, tmp_path/"out")
-    assert json.loads((tmp_path/"out"/"p8_e03_explainable_report.json").read_text()) == saved
+    assert json.loads((tmp_path/"out"/"p8_e03_explainable_report.json").read_text(encoding="utf-8")) == saved
     assert (tmp_path/"out"/"p8_e03_explainable_report.html").exists()
 
 
