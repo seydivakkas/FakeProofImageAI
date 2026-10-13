@@ -420,3 +420,15 @@ python -m pytest -q
 [Kanıt matematiği ve veri sözleşmesi](docs/P8_E01_EVIDENCE_CONTRACT.md).
 P8-E02 kanıt bağımlılıkları, çoklu hipotez kontrolü ve birleştirme;
 P8-E03 açıklanabilir kanıt raporu. Gerçek cihaz doğrulaması en son.
+
+## P8-E02 — Dependency-aware evidence aggregation (v0.27.0)
+
+- [Python fusion module](src/aiforensics/evidence_fusion.py) — shared input and calibration lineage, connected dependency components.
+- [CLI and examples](examples/p8_e02_fusion.json) — `python -m aiforensics analyze-fusion --input examples/p8_e02_fusion.json --out outputs/p8_e02`.
+- [25 synthetic unit and integration tests](tests/test_p8_e02_fusion.py).
+- [Mathematical design and failure gates](docs/P8_E02_DEPENDENT_EVIDENCE_FUSION.md).
+- [Deterministic synthetic stress benchmark](scripts/p8_fusion_benchmark.py).
+
+**Interpretation:** Within-component Bonferroni and between-component Holm correct conditional hypothesis tests under their declared assumptions; they do **not** establish AI-image origin. Unverified source lineage, independent calibration or hypothesis pre-registration produce an inconclusive/blocked result. Real camera datasets and Windows device validation remain the final acceptance phase.
+
+**Engineering state:** local integrated regression passed 817 tests; GitHub Actions should be independently checked for this commit. P8-E03 combined human-readable reports and overall integration follow.
