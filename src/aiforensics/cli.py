@@ -64,6 +64,7 @@ from .sensor_synthetic import synthetic_sensor_fixture, render_sensor_demo
 from .sensor_fingerprint import FingerprintError, run_fingerprint_manifest
 from .sensor_fingerprint_synthetic import write_synthetic_fingerprint_fixture, render_fingerprint_summary
 from .evidence_contract import run_evidence_manifest, MODULES, EvidenceContractError
+from .evidence_fusion import run_fusion_manifest
 
 
 def _write_report(out: Path, data: dict):
@@ -478,6 +479,9 @@ def main(argv=None):
     p.add_argument('--input',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     subs.add_parser('list-evidence-modules',help='P8-E01 registered P1–P7 physical evidence modules')
+    p=subs.add_parser('analyze-fusion',help='P8-E02 dependency groups and conservative familywise inference')
+    p.add_argument('--input',type=Path,required=True)
+    p.add_argument('--out',type=Path,required=True)
     p=subs.add_parser('analyze-sensor-fingerprint',help='P7-S02 RAW PRNU/DSNU reference and independent query correlation')
     p.add_argument('--input',type=Path,required=True)
     p.add_argument('--out',type=Path,default=Path('outputs/p7_s02_analysis'))
@@ -492,6 +496,16 @@ def main(argv=None):
         except (EvidenceContractError, ValueError, OSError) as exc:
             parser.error(str(exc))
         print(json.dumps({'summary_counts':result['summary_counts'],'output':str(args.out/'p8_e01_evidence_report.json'),'decision':result['decision']},ensure_ascii=False))
+        return
+    if args.command=='analyze-fusion':
+        try:
+            report=run_fusion_manifest(args.input,args.out)
+        except (EvidenceContractError,ValueError,TypeError,OSError) as exc:
+            parser.error(str(exc))
+        print(json.dumps({'overall_state':report['overall_state'],
+                          'components':report['component_count'],
+                          'report':str(args.out/'p8_e02_fusion_report.json'),
+                          'decision':report['decision']},ensure_ascii=False))
         return
     if args.command=='list-evidence-modules':
         print(json.dumps(MODULES,ensure_ascii=False,indent=2))
