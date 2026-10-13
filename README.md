@@ -439,3 +439,8 @@ P8-E03 açıklanabilir kanıt raporu. Gerçek cihaz doğrulaması en son.
 `python -m aiforensics explain-evidence --input examples/p8_e03_explainable.json --out outputs/p8_e03`
 
 Çevrimdışı HTML ve JSON: her ölçüm için varsayımlar, belirsizlik, E01 hipotezi, E02 bağımlılık grubu ve karar gerekçesi. **AI köken kararı veya gerçek veri doğrulaması değildir.** [Teknik belge](docs/P8_E03_EXPLAINABLE_REPORT.md).
+
+
+## P9-I01 — Masaüstü ve modül entegrasyonu (v0.29.0)
+
+`pip install -e ".[dev,desktop]"` ardından `fakeproof-desktop` ile dokuz sayfalı çevrimdışı arayüz çalıştırılır. P1–P7'nin 24 fizik motoru ve E01–E03, ölçüm manifestleriyle CLI köprüsü üzerinden çağrılır. [Kapsam ve sınırlar](docs/P9_I01_DESKTOP_INTEGRATION.md). Gerçek kamera/Windows kullanıcı kabulü son aşamadadır.
