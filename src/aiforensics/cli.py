@@ -65,6 +65,7 @@ from .sensor_fingerprint import FingerprintError, run_fingerprint_manifest
 from .sensor_fingerprint_synthetic import write_synthetic_fingerprint_fixture, render_fingerprint_summary
 from .evidence_contract import run_evidence_manifest, MODULES, EvidenceContractError
 from .evidence_fusion import run_fusion_manifest
+from .evidence_explain import run_explainable_manifest
 
 
 def _write_report(out: Path, data: dict):
@@ -482,6 +483,10 @@ def main(argv=None):
     p=subs.add_parser('analyze-fusion',help='P8-E02 dependency groups and conservative familywise inference')
     p.add_argument('--input',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
+    p=subs.add_parser('explain-evidence',help='P8-E03 explainable conditional physical evidence JSON and HTML')
+    p.add_argument('--input',type=Path,required=True)
+    p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--max-html-findings',type=int,default=250)
     p=subs.add_parser('analyze-sensor-fingerprint',help='P7-S02 RAW PRNU/DSNU reference and independent query correlation')
     p.add_argument('--input',type=Path,required=True)
     p.add_argument('--out',type=Path,default=Path('outputs/p7_s02_analysis'))
@@ -505,6 +510,18 @@ def main(argv=None):
         print(json.dumps({'overall_state':report['overall_state'],
                           'components':report['component_count'],
                           'report':str(args.out/'p8_e02_fusion_report.json'),
+                          'decision':report['decision']},ensure_ascii=False))
+        return
+    if args.command=='explain-evidence':
+        try:
+            report=run_explainable_manifest(args.input,args.out,max_html_findings=args.max_html_findings)
+        except (EvidenceContractError,ValueError,TypeError,OSError) as exc:
+            parser.error(str(exc))
+        print(json.dumps({'overall_state':report['summary']['overall_state'],
+                          'findings':report['summary']['record_count'],
+                          'dependency_groups':report['summary']['dependency_group_count'],
+                          'json_report':str(args.out/'p8_e03_explainable_report.json'),
+                          'html_report':str(args.out/'p8_e03_explainable_report.html'),
                           'decision':report['decision']},ensure_ascii=False))
         return
     if args.command=='list-evidence-modules':

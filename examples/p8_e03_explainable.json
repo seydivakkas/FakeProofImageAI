@@ -1,0 +1,173 @@
+{
+  "schema_version": "p8.e01.v1",
+  "dataset_scope": "synthetic_controlled",
+  "records": [
+    {
+      "module_id": "P1-G01",
+      "observation_id": "vp_001",
+      "unit": "px",
+      "measured": 24,
+      "predicted": 20,
+      "assumptions": [
+        {
+          "name": "calibrated physical model",
+          "status": "supported",
+          "source": "synthetic ground truth"
+        }
+      ],
+      "provenance": {
+        "source_id": "frame-a",
+        "calibration_id": "calibration-frame-a",
+        "split": "holdout",
+        "independent_of_training": true,
+        "external_reference_verified": true
+      },
+      "uncertainty": {
+        "measurement_std": 1,
+        "prediction_std": 0,
+        "error_correlation": 0
+      },
+      "test": {
+        "null_distribution": "normal_zero_mean_residual",
+        "alpha": 0.01,
+        "pre_registered": true,
+        "distribution_independently_checked": true
+      },
+      "lineage": {
+        "raw_asset_id": "frame-a",
+        "calibration_asset_id": "calibration-frame-a",
+        "reference_id": "reference-frame-a",
+        "holdout_batch_id": "holdout-frame-a",
+        "feature_family_id": "feature-frame-a",
+        "model_family_id": "model-P1-G01"
+      }
+    },
+    {
+      "module_id": "P1-G02",
+      "observation_id": "vp_002",
+      "unit": "px",
+      "measured": 23,
+      "predicted": 20,
+      "assumptions": [
+        {
+          "name": "calibrated physical model",
+          "status": "supported",
+          "source": "synthetic ground truth"
+        }
+      ],
+      "provenance": {
+        "source_id": "frame-a",
+        "calibration_id": "calibration-frame-a",
+        "split": "holdout",
+        "independent_of_training": true,
+        "external_reference_verified": true
+      },
+      "uncertainty": {
+        "measurement_std": 1,
+        "prediction_std": 0,
+        "error_correlation": 0
+      },
+      "test": {
+        "null_distribution": "normal_zero_mean_residual",
+        "alpha": 0.01,
+        "pre_registered": true,
+        "distribution_independently_checked": true
+      },
+      "lineage": {
+        "raw_asset_id": "frame-a",
+        "calibration_asset_id": "calibration-frame-a",
+        "reference_id": "reference-frame-a",
+        "holdout_batch_id": "holdout-frame-a",
+        "feature_family_id": "feature-frame-a",
+        "model_family_id": "model-P1-G02"
+      }
+    },
+    {
+      "module_id": "P7-S01",
+      "observation_id": "noise_003",
+      "unit": "px",
+      "measured": 20.1,
+      "predicted": 20,
+      "assumptions": [
+        {
+          "name": "calibrated physical model",
+          "status": "supported",
+          "source": "synthetic ground truth"
+        }
+      ],
+      "provenance": {
+        "source_id": "frame-b",
+        "calibration_id": "calibration-frame-b",
+        "split": "holdout",
+        "independent_of_training": true,
+        "external_reference_verified": true
+      },
+      "uncertainty": {
+        "measurement_std": 1,
+        "prediction_std": 0,
+        "error_correlation": 0
+      },
+      "test": {
+        "null_distribution": "normal_zero_mean_residual",
+        "alpha": 0.01,
+        "pre_registered": true,
+        "distribution_independently_checked": true
+      },
+      "lineage": {
+        "raw_asset_id": "frame-b",
+        "calibration_asset_id": "calibration-frame-b",
+        "reference_id": "reference-frame-b",
+        "holdout_batch_id": "holdout-frame-b",
+        "feature_family_id": "feature-frame-b",
+        "model_family_id": "model-P7-S01"
+      }
+    },
+    {
+      "module_id": "P6-M02",
+      "observation_id": "material_004",
+      "unit": "px",
+      "measured": 26,
+      "predicted": 20,
+      "assumptions": [
+        {
+          "name": "calibrated physical model",
+          "status": "supported",
+          "source": "synthetic ground truth"
+        }
+      ],
+      "provenance": {
+        "source_id": "frame-c",
+        "calibration_id": "calibration-frame-c",
+        "split": "holdout",
+        "independent_of_training": true,
+        "external_reference_verified": true
+      },
+      "uncertainty": {
+        "measurement_std": 1,
+        "prediction_std": 0,
+        "error_correlation": 0
+      },
+      "test": {
+        "null_distribution": "normal_zero_mean_residual",
+        "alpha": 0.01,
+        "pre_registered": true,
+        "distribution_independently_checked": true
+      },
+      "lineage": {
+        "raw_asset_id": "frame-c",
+        "calibration_asset_id": "calibration-frame-c",
+        "reference_id": "reference-frame-c",
+        "holdout_batch_id": "holdout-frame-c",
+        "feature_family_id": "feature-frame-c",
+        "model_family_id": "model-P6-M02"
+      }
+    }
+  ],
+  "fusion": {
+    "familywise_alpha": 0.01,
+    "plan_pre_registered": true,
+    "dependency_audit_verified": true,
+    "dependence_unknown": false,
+    "declared_edges": []
+  }
+}

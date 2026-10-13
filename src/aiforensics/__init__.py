@@ -1,2 +1,2 @@
 """Physics-first image forensics: geometric and photometric tests, no AI-origin verdict."""
-__version__ = "0.27.0"
+__version__ = "0.28.0"

@@ -432,3 +432,10 @@ P8-E03 açıklanabilir kanıt raporu. Gerçek cihaz doğrulaması en son.
 **Interpretation:** Within-component Bonferroni and between-component Holm correct conditional hypothesis tests under their declared assumptions; they do **not** establish AI-image origin. Unverified source lineage, independent calibration or hypothesis pre-registration produce an inconclusive/blocked result. Real camera datasets and Windows device validation remain the final acceptance phase.
 
 **Engineering state:** local integrated regression passed 817 tests; GitHub Actions should be independently checked for this commit. P8-E03 combined human-readable reports and overall integration follow.
+
+
+## P8-E03 — Açıklanabilir fiziksel kanıt raporu (v0.28.0)
+
+`python -m aiforensics explain-evidence --input examples/p8_e03_explainable.json --out outputs/p8_e03`
+
+Çevrimdışı HTML ve JSON: her ölçüm için varsayımlar, belirsizlik, E01 hipotezi, E02 bağımlılık grubu ve karar gerekçesi. **AI köken kararı veya gerçek veri doğrulaması değildir.** [Teknik belge](docs/P8_E03_EXPLAINABLE_REPORT.md).
