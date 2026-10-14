@@ -14,6 +14,8 @@ from tkinter import filedialog, messagebox, simpledialog, ttk
 import webbrowser
 
 from .desktop_core import DesktopIntegrationError, Project, module_catalog, sha256
+from .journey_core import available_projects, journey_snapshot
+from .journey_ui import render_home_dashboard, render_workflow_strip
 
 BG="#0a1420"
 NAV="#0d1e30"
@@ -48,6 +50,8 @@ class DesktopApp(tk.Tk):
         self.run_id=None
         self.busy=False
         self.preview_photo=None
+        self.selected_asset_sha=None
+        self.active_page=PAGES[0]
         self._style()
         self._layout()
         self.go(PAGES[0])
@@ -95,7 +99,12 @@ class DesktopApp(tk.Tk):
         header.pack(fill="x")
         self.label(header,"⬡ FakeProofImageAI",16,INK,True).pack(side="left",padx=20,pady=13)
         self.project_tag=self.label(header,"Proje: Ornek_Proje",11,MUTED)
-        self.project_tag.pack(side="left",padx=25)
+        self.project_tag.pack(side="left",padx=12)
+        self.project_choice=tk.StringVar(value=self.project.name)
+        self.project_picker=ttk.Combobox(header,textvariable=self.project_choice,
+                values=available_projects(self.workspace),state="readonly",width=23)
+        self.project_picker.pack(side="left",padx=8)
+        self.project_picker.bind("<<ComboboxSelected>>",self.switch_project)
         self.button(header,"+ Yeni Proje",self.new_project,True).pack(side="right",padx=14)
         middle=tk.Frame(self,bg=BG)
         middle.pack(fill="both",expand=True)
@@ -118,44 +127,59 @@ class DesktopApp(tk.Tk):
                  anchor="w",padx=22,pady=7).pack(fill="x")
 
     def go(self,title):
+        self.active_page=title
         for child in self.page.winfo_children():
             child.destroy()
         for name,button in self.nav.items():
             button.configure(bg=BLUE if name==title else NAV)
-        self.label(self.page,title,21,INK,True).pack(anchor="w",pady=(0,13))
+        self.label(self.page,title,21,INK,True).pack(anchor="w",pady=(0,8))
+        render_workflow_strip(self)
         getattr(self,"screen_"+str(PAGES.index(title)))()
 
     def err(self,error):
         self.status.set(str(error))
         messagebox.showerror("FakeProofImageAI",str(error),parent=self)
 
+    def switch_project(self,event=None):
+        choice=self.project_choice.get()
+        if self.busy:
+            self.project_choice.set(self.project.name)
+            self.status.set("Analiz çalışırken proje değiştirilemez")
+            return
+        if choice==self.project.name:return
+        if choice not in available_projects(self.workspace):
+            self.project_choice.set(self.project.name)
+            self.err("Seçili proje yerel envanterde bulunmadı")
+            return
+        try:
+            self.project=Project(self.workspace,choice)
+            self.project_tag.config(text="Proje: "+choice)
+            self.run_id=None;self.source.set("");self.selected_asset_sha=None
+            self.status.set("Yerel proje açıldı: "+choice+"; kamera doğrulaması yapılmadı")
+            self.go(PAGES[0])
+        except (OSError,ValueError) as exc:
+            self.project_choice.set(self.project.name)
+            self.err(exc)
+
     def new_project(self):
         name=simpledialog.askstring("Yeni proje","Proje adı (ASCII / _ / -)",parent=self)
         if name:
+            if self.busy:
+                self.status.set("Analiz sürerken yeni projeye geçilemez")
+                return
             try:
                 self.project=Project(self.workspace,name)
                 self.project_tag.config(text="Proje: "+name)
+                self.project_picker.configure(values=available_projects(self.workspace))
+                self.project_choice.set(name)
+                self.source.set("");self.selected_asset_sha=None
                 self.run_id=None
                 self.go(PAGES[0])
             except (OSError,ValueError) as e:
                 self.err(e)
 
     def screen_0(self):
-        self.label(self.page,"Görüntü → Ölçüm / kalibrasyon → E01 → E02 → E03",
-                   12,MUTED).pack(anchor="w")
-        p=self.box("Proje Özeti")
-        self.table(p,("Başlık","Durum"),[
-            ("İçe aktarılan görüntü",len(self.project.data["images"])),
-            ("Modül çalışmaları",len(self.project.data["runs"])),
-            ("P1–P7 fizik modülü",24),
-            ("P8 kanıt adımı","E01 / E02 / E03"),
-            ("Gerçek kamera doğrulaması","SON AŞAMA"),
-        ],5)
-        p=self.box("Son Analizler")
-        self.table(p,("Çalışma","Modül","Sonuç"),
-                   [(r["run_id"],r["module_id"],r["state"])
-                    for r in reversed(self.project.data["runs"][-12:])],9)
-        self.button(self.page,"Görüntü Yükle",lambda:self.go(PAGES[1]),True).pack(anchor="w")
+        render_home_dashboard(self)
 
     def screen_1(self):
         p=self.box("Görüntü Yükleme ve SHA-256 Envanteri")
@@ -171,6 +195,7 @@ class DesktopApp(tk.Tk):
             if not t.selection():
                 return
             item=assets[t.index(t.selection()[0])]
+            self.selected_asset_sha=item["sha256"]
             try:
                 from PIL import Image, ImageTk
                 img=Image.open(self.project.root/"images"/item["file"])
@@ -180,6 +205,8 @@ class DesktopApp(tk.Tk):
             except (ImportError,OSError):
                 self.preview.configure(image="",text=item["name"]+" · Pillow önizlemesi yok")
         t.bind("<<TreeviewSelect>>",select)
+        self.button(p,"Seçilen Görüntüyü Anote Et",self.open_annotation_editor).pack(anchor="w",pady=4)
+        self.button(p,"Görsel Katman Gezgini",lambda:self.open_review("Görsel Katmanlar")).pack(anchor="w",pady=4)
 
     def import_images(self):
         paths=filedialog.askopenfilenames(parent=self,
@@ -257,7 +284,7 @@ class DesktopApp(tk.Tk):
         if result["returncode"]!=0:
             self.err("Modül çalışmadı; çalışma dizininde stderr.txt inceleyin")
         else:
-            self.go(PAGES[5])
+            self.go(PAGES[5] if result["module_id"].startswith("P8-") else PAGES[4])
 
     def choose_module(self,module):
         self.module.set(module)
@@ -286,13 +313,16 @@ class DesktopApp(tk.Tk):
         if not images:
             messagebox.showinfo("Görüntü gerekli","Önce Görüntü Yükleme sayfasından görüntü ekleyin.",parent=self)
             return
-        index=1
-        if len(images)>1:
+        index=next((i+1 for i,x in enumerate(images)
+                    if x.get("sha256")==self.selected_asset_sha),None)
+        if index is None and len(images)==1:index=1
+        if index is None and len(images)>1:
             names="\\n".join(str(i+1)+": "+x["name"] for i,x in enumerate(images[:30]))
             index=simpledialog.askinteger("Görüntü seç",names+"\\nGörüntü sıra numarası:",
                         minvalue=1,maxvalue=len(images),parent=self)
             if index is None:return
         asset=images[index-1]
+        self.selected_asset_sha=asset["sha256"]
         try:
             from .annotation_editor import AnnotationEditor
             from .annotation_model import AnnotationError

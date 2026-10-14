@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ai-image-forensics-physics"
-version = "0.32.0"
+version = "0.33.0"
 description = "Physics-first image forensics: P1 geometry plus P2-S01/S02 projected shadows plus P2-S03 calibrated 3D light geometry plus P2-S04 solar, P2-S05 penumbra P3-R01 mirror P3-R02 refraction and P3-R03 multi-mirror ray path physics plus P4-O01 lens distortion, P4-O02 thin-lens defocus, P4-O03 sensor FoV and perspective, P4-O04 vignetting consistency plus P5-D01 depth/contact/support and P5-D02 conditional multi-plane occlusion and P5-D03 gravity/contact friction/force-moment static feasibility plus P6-M01 Lambertian BRDF and energy conservation and P6-M02 single-scattering GGX Cook-Torrance Fresnel specular consistency plus P6-M03 energy-bounded combined diffuse/specular and conditional multiple-scattering proxy plus P7-S01 Poisson shot/dark Gaussian read sensor noise, gain, SNR and RAW holdout testing; P7-S02 PRNU/DSNU spatial fixed-pattern estimation, independent camera correlation and provenance safeguards"
 readme = "README.md"
 requires-python = ">=3.10"

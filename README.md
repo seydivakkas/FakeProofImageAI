@@ -465,3 +465,8 @@ Sentetik şablonlar asla gerçek kamera kalibrasyonu ya da görüntü özgünlü
 Masaüstü arayüzünün **Fiziksel Ölçümler / Kanıt İnceleme / Bağımlılık Grafiği / Rapor Dışa Aktarma** sayfalarından P9-I04 gezginini açın. Özgün görüntü, SHA-256 bağlı anotasyon ve kullanıcı tarafından açıkça ilişkilendirilen PNG katmanları birlikte incelenebilir. Yalnız gerçek E03 kayıtlarındaki bulgu ve bağımlılıkları görselleştirir. Kullanıcı bağlantıları `user_asserted_not_verified` durumunda kalır; otomatik doğrulanmış fotoğraf eşleşmesi veya AI kökeni olasılığı üretmez.
 
 Windows çevrimdışı PyInstaller `--onedir` **derleme betiği**: `scripts/build_windows_desktop.ps1`. Betiğin varlığı gerçek Windows cihaz kabulü veya imzalanmış kurulum paketi değildir. [P9-I04 teknik dokümanı](docs/P9_I04_EVIDENCE_REVIEW_PACKAGING.md).
+
+
+## P9-I05 — Tek kullanıcı akışı (v0.33.0)
+
+Yerel proje seçimi, gerçek kayıtlara bağlı beş adımlı gezinme bandı, seçili görüntü–anotasyon ve koşum–kanıt–rapor yönlendirmesi. Otomatik test PASS, gerçek kamera kabulü değildir. [Teknik belge](docs/P9_I05_UNIFIED_DESKTOP_JOURNEY.md).
