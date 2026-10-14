@@ -1,0 +1,46 @@
+{
+  "points_xy": [
+    [
+      640.0,
+      640.5
+    ],
+    [
+      640.0,
+      560.3571428571429
+    ],
+    [
+      640.0,
+      515.8333333333334
+    ],
+    [
+      640.0,
+      487.5
+    ],
+    [
+      640.0,
+      467.88461538461536
+    ],
+    [
+      640.0,
+      453.5
+    ]
+  ],
+  "lattice_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "training_indices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "pixel_sigma": 0.35,
+  "bootstrap_samples": 500,
+  "seed": 2026,
+  "provenance": "Synthetic pinhole projected floor marks, equal 2m world-depth steps."
+}

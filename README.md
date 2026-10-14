@@ -449,3 +449,12 @@ P8-E03 açıklanabilir kanıt raporu. Gerçek cihaz doğrulaması en son.
 ## P9-I02 — Etkileşimli çizim ve kalibrasyon editörü (v0.30.0)
 
 Kalibrasyon ve Fiziksel Ölçümler ekranlarından görüntü üzerinde nokta, çizgi, çoklu çizgi, çokgen ve ROI çizilebilir; pan, zoom, düzenleme, undo/redo, piksel ölçümü, SHA-256 kaynak kilidi ve yerel anotasyon JSON saklama desteklenir. Kullanıcı etiketli X/Y/Z çizgi grupları G02 için **doğrulanmamış taslak** oluşturur. [Mühendislik sözleşmesi](docs/P9_I02_INTERACTIVE_ANNOTATIONS.md). Gerçek kamera metrik kabulü son aşamadadır.
+
+
+## P9-I03 — Modül formları ve güvenli planlama (v0.31.0)
+
+**27 modül** (P1–P7: 24 fiziksel; P8-E01/E02/E03: 3 istatistiksel) için ayrı JSON veri formu ve görüntü seçimi. Her modülün gerçek CLI giriş sözleşmesine uygun örneklerden tipli alan düzenleyici, yapısal doğrulama, bağımlılık sıralaması, SHA-256 kaynağı, kontrollü yürütme ve denetim günlüğü.
+
+`fakeproof-desktop` → **Analiz Planı** → **Modül Formları ve Planlayıcıyı Aç**.
+
+Sentetik şablonlar asla gerçek kamera kalibrasyonu ya da görüntü özgünlüğü doğrulaması değildir; başka modülden otomatik bağımsız ölçüm türetilmez. [P9-I03 teknik belge](docs/P9_I03_MODULE_FORMS_WORKFLOW.md).

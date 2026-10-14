@@ -1,0 +1,42 @@
+{
+  "schema_version": "p8.e01.v1",
+  "dataset_scope": "synthetic_controlled",
+  "records": [
+    {
+      "module_id": "P4-O01",
+      "observation_id": "independent_lens_holdout_01",
+      "measured": 100.3,
+      "predicted": 100.0,
+      "unit": "px",
+      "assumptions": [{"name": "camera geometry", "status": "supported", "source": "controlled independent synthetic truth"}],
+      "provenance": {
+        "source_id": "synthetic-lens-test-01",
+        "calibration_id": "synthetic-lens-train-01",
+        "split": "holdout",
+        "independent_of_training": true,
+        "external_reference_verified": true
+      },
+      "uncertainty": {"measurement_std": 0.5, "prediction_std": 0.2, "error_correlation": 0.0},
+      "test": {"null_distribution": "normal_zero_mean_residual", "alpha": 0.01,
+               "pre_registered": true, "distribution_independently_checked": true}
+    },
+    {
+      "module_id": "P7-S02",
+      "observation_id": "unverified_sensor_correlation",
+      "measured": 0.88,
+      "predicted": 0.95,
+      "unit": "pearson-r",
+      "assumptions": [{"name": "independent real sensor null calibration", "status": "unknown", "source": "real-camera validation deferred"}],
+      "provenance": {
+        "source_id": "synthetic-camera-query-02",
+        "calibration_id": "unverified-null-calibration",
+        "split": "holdout",
+        "independent_of_training": true,
+        "external_reference_verified": false
+      },
+      "uncertainty": {"measurement_std": 0.05, "prediction_std": 0.02, "error_correlation": null},
+      "test": {"null_distribution": "unverified", "alpha": 0.01,
+               "pre_registered": false, "distribution_independently_checked": false}
+    }
+  ]
+}

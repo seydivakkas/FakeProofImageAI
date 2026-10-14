@@ -209,6 +209,16 @@ class DesktopApp(tk.Tk):
                  font=("Segoe UI",12,"bold")).pack(side="left",padx=10)
         self.button(p,"Girdi Seç",self.select_manifest).pack(side="left",padx=8)
         self.button(p,"Çalıştır",self.run_module,True).pack(side="left",padx=8)
+        self.button(self.page,"Modül Formları ve Planlayıcıyı Aç",
+                    self.open_workflow,True).pack(anchor="w",pady=10)
+
+    def open_workflow(self):
+        """P9-I03 independent typed module forms + conservative execution planner."""
+        try:
+            from .workflow_ui import open_workflow_window
+            open_workflow_window(self,self.project,initial_module=self.module.get())
+        except (ValueError,OSError,ImportError) as exc:
+            self.err(exc)
 
     def select_manifest(self):
         image=self.module.get()=="P1-G01"
@@ -260,6 +270,8 @@ class DesktopApp(tk.Tk):
                    11,MUTED).pack(anchor="w",pady=8)
         self.button(p,"Görüntü Üzerinde Kalibrasyon Çiz",self.open_annotation_editor,True).pack(anchor="w",pady=6)
         self.button(p,"Kalibrasyon JSON Ekle",self.add_calibration).pack(anchor="w",pady=6)
+        self.button(p,"Modüle Özel Kalibrasyon Formları",
+                    self.open_workflow).pack(anchor="w",pady=6)
         self.label(p,"Seçili kalibrasyon: "+str(self.project.data.get("calibration") or "YOK"),
                    10,MUTED).pack(anchor="w")
         for module,label in [("P1-G02","Kaçış noktaları"),("P1-G04","Homografi"),
@@ -329,6 +341,8 @@ class DesktopApp(tk.Tk):
         self.label(p,"P1 Geometri · P2 Gölge · P3 Yansıma · P4 Optik · P5 3B · P6 Malzeme · P7 Sensör",
                    11,MUTED).pack(anchor="w",pady=9)
         self.button(p,"Görüntü Üzerinde Fiziksel Ölçüm Yap",self.open_annotation_editor,True).pack(anchor="w",pady=8)
+        self.button(p,"Modül Formları ve Ölçüm Planlayıcısı",
+                    self.open_workflow,True).pack(anchor="w",pady=6)
         self.button(p,"Modül Seç",lambda:self.go(PAGES[2])).pack(anchor="w")
         p=self.box("Gerçek CLI Çıktıları")
         self.artifact_table(p)
