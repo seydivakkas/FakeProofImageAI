@@ -160,7 +160,8 @@ class Project:
             out=self.root/"runs"/f"{n:04d}_{module_id.replace('-','_')}"
         out.mkdir()
         command=COMMANDS[module_id]
-        argv=[sys.executable,"-m","aiforensics",command]
+        argv=([sys.executable,"--cli",command] if getattr(sys,"frozen",False)
+              else [sys.executable,"-m","aiforensics",command])
         argv += [str(source)] if image else ["--input",str(source)]
         argv += ["--out",str(out)]
         try:

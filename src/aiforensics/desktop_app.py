@@ -336,8 +336,14 @@ class DesktopApp(tk.Tk):
                 self.status.set("Dosya: "+str(file))
         t.bind("<Double-1>",open_record)
 
+    def open_review(self, tab='Görsel Katmanlar'):
+        from .review_ui import ReviewWindow
+        ReviewWindow(self, self.project, tab=tab)
+
     def screen_4(self):
         p=self.box("Fiziksel Ölçümler")
+        self.button(p,"P9-I04 Görsel Katmanlar ve Ölçüm Gezgini",
+                    lambda:self.open_review("Görsel Katmanlar"),True).pack(anchor="w",pady=6)
         self.label(p,"P1 Geometri · P2 Gölge · P3 Yansıma · P4 Optik · P5 3B · P6 Malzeme · P7 Sensör",
                    11,MUTED).pack(anchor="w",pady=9)
         self.button(p,"Görüntü Üzerinde Fiziksel Ölçüm Yap",self.open_annotation_editor,True).pack(anchor="w",pady=8)
@@ -349,6 +355,8 @@ class DesktopApp(tk.Tk):
 
     def screen_5(self):
         p=self.box("E01 Tekil Kanıt · E02 Bağımlı Birleşim · E03 Açıklanabilir Rapor")
+        self.button(p,"P9-I04 Bulgu–Görüntü ve Kanıt Gezgini",
+                    lambda:self.open_review("Kanıt İnceleme"),True).pack(anchor="w",pady=6)
         b=tk.Frame(p,bg=PANEL)
         b.pack(anchor="w",pady=12)
         for module in ("P8-E01","P8-E02","P8-E03"):
@@ -360,6 +368,8 @@ class DesktopApp(tk.Tk):
 
     def screen_6(self):
         p=self.box("E02 / E03 Bağımlılık Grafiği (gerçek lineage grupları)")
+        self.button(p,"P9-I04 Gerçek Kaynak Bağımlılıklarını Aç",
+                    lambda:self.open_review("Bağımlılık Grafiği"),True).pack(anchor="w",pady=6)
         self.label(p,"Bağımlılık çıkarılmadıysa örnek bağlantılar icat edilmez.",
                    10,MUTED).pack(anchor="w")
         canvas=tk.Canvas(p,bg=NAV,height=460,highlightthickness=0)
@@ -386,6 +396,8 @@ class DesktopApp(tk.Tk):
 
     def screen_7(self):
         p=self.box("Rapor Dışa Aktarma · ZIP ve SHA-256")
+        self.button(p,"P9-I04 Ayrıntılı Rapor Gezgini",
+                    lambda:self.open_review("Rapor Gezgini"),True).pack(anchor="w",pady=6)
         rows=[(x["run_id"],x["module_id"],x["state"]) for x in self.project.data["runs"]]
         tree=self.table(p,("Çalışma","Modül","Durum"),rows,11)
         tree.bind("<<TreeviewSelect>>",
@@ -424,6 +436,12 @@ class DesktopApp(tk.Tk):
 
 
 def main():
+    import sys
+    # Frozen PyInstaller app can dispatch the allowlisted CLI in a child process.
+    if getattr(sys,'frozen',False) and len(sys.argv)>1 and sys.argv[1]=='--cli':
+        from .cli import main as cli_main
+        cli_main(sys.argv[2:])
+        return
     app=DesktopApp()
     app.mainloop()
 

@@ -458,3 +458,10 @@ Kalibrasyon ve Fiziksel Ölçümler ekranlarından görüntü üzerinde nokta, �
 `fakeproof-desktop` → **Analiz Planı** → **Modül Formları ve Planlayıcıyı Aç**.
 
 Sentetik şablonlar asla gerçek kamera kalibrasyonu ya da görüntü özgünlüğü doğrulaması değildir; başka modülden otomatik bağımsız ölçüm türetilmez. [P9-I03 teknik belge](docs/P9_I03_MODULE_FORMS_WORKFLOW.md).
+
+
+## P9-I04 — Görsel Katman, Kanıt ve Rapor Gezgini (v0.32.0)
+
+Masaüstü arayüzünün **Fiziksel Ölçümler / Kanıt İnceleme / Bağımlılık Grafiği / Rapor Dışa Aktarma** sayfalarından P9-I04 gezginini açın. Özgün görüntü, SHA-256 bağlı anotasyon ve kullanıcı tarafından açıkça ilişkilendirilen PNG katmanları birlikte incelenebilir. Yalnız gerçek E03 kayıtlarındaki bulgu ve bağımlılıkları görselleştirir. Kullanıcı bağlantıları `user_asserted_not_verified` durumunda kalır; otomatik doğrulanmış fotoğraf eşleşmesi veya AI kökeni olasılığı üretmez.
+
+Windows çevrimdışı PyInstaller `--onedir` **derleme betiği**: `scripts/build_windows_desktop.ps1`. Betiğin varlığı gerçek Windows cihaz kabulü veya imzalanmış kurulum paketi değildir. [P9-I04 teknik dokümanı](docs/P9_I04_EVIDENCE_REVIEW_PACKAGING.md).
