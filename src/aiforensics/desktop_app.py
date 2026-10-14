@@ -13,7 +13,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox, simpledialog, ttk
 import webbrowser
 
-from .desktop_core import DesktopIntegrationError, Project, module_catalog
+from .desktop_core import DesktopIntegrationError, Project, module_catalog, sha256
 
 BG="#0a1420"
 NAV="#0d1e30"
@@ -258,7 +258,8 @@ class DesktopApp(tk.Tk):
         p=self.box("Kalibrasyon Yönetimi")
         self.label(p,"G02, G04 ve O01 bağımsız geometrik veri gerektirir.",
                    11,MUTED).pack(anchor="w",pady=8)
-        self.button(p,"Kalibrasyon JSON Ekle",self.add_calibration,True).pack(anchor="w",pady=6)
+        self.button(p,"Görüntü Üzerinde Kalibrasyon Çiz",self.open_annotation_editor,True).pack(anchor="w",pady=6)
+        self.button(p,"Kalibrasyon JSON Ekle",self.add_calibration).pack(anchor="w",pady=6)
         self.label(p,"Seçili kalibrasyon: "+str(self.project.data.get("calibration") or "YOK"),
                    10,MUTED).pack(anchor="w")
         for module,label in [("P1-G02","Kaçış noktaları"),("P1-G04","Homografi"),
@@ -266,6 +267,35 @@ class DesktopApp(tk.Tk):
             self.button(p,label,lambda m=module:self.choose_module(m)).pack(anchor="w",pady=5)
         self.label(self.page,"Bir JSON kaydı bağımsız kalibrasyon doğrulaması değildir.",
                    10,MUTED).pack(anchor="w")
+
+    def open_annotation_editor(self):
+        """P9-I02 native-image coordinate editor; annotations are not 3D truth."""
+        images=self.project.data["images"]
+        if not images:
+            messagebox.showinfo("Görüntü gerekli","Önce Görüntü Yükleme sayfasından görüntü ekleyin.",parent=self)
+            return
+        index=1
+        if len(images)>1:
+            names="\\n".join(str(i+1)+": "+x["name"] for i,x in enumerate(images[:30]))
+            index=simpledialog.askinteger("Görüntü seç",names+"\\nGörüntü sıra numarası:",
+                        minvalue=1,maxvalue=len(images),parent=self)
+            if index is None:return
+        asset=images[index-1]
+        try:
+            from .annotation_editor import AnnotationEditor
+            from .annotation_model import AnnotationError
+            image_file=(self.project.root/"images"/asset["file"]).resolve(strict=True)
+            image_dir=(self.project.root/"images").resolve()
+            if image_file.parent!=image_dir or sha256(image_file)!=asset["sha256"]:
+                raise DesktopIntegrationError("Görüntü yolu / SHA-256 doğrulaması başarısız")
+            annotation_file=self.project.root/"manifests"/("annotations_"+asset["sha256"]+".json")
+            AnnotationEditor(self,image_file,annotation_file,
+                expected_sha256=asset["sha256"],
+                on_saved=lambda document,path:self.status.set(
+                    "Piksel anotasyonları kaydedildi: "+str(path)+
+                    " · gerçek ölçek / kamera doğrulaması yapılmadı"))
+        except (OSError,ValueError,DesktopIntegrationError) as e:
+            self.err(e)
 
     def add_calibration(self):
         path=filedialog.askopenfilename(parent=self,filetypes=[("JSON","*.json")])
@@ -298,7 +328,8 @@ class DesktopApp(tk.Tk):
         p=self.box("Fiziksel Ölçümler")
         self.label(p,"P1 Geometri · P2 Gölge · P3 Yansıma · P4 Optik · P5 3B · P6 Malzeme · P7 Sensör",
                    11,MUTED).pack(anchor="w",pady=9)
-        self.button(p,"Modül Seç",lambda:self.go(PAGES[2]),True).pack(anchor="w")
+        self.button(p,"Görüntü Üzerinde Fiziksel Ölçüm Yap",self.open_annotation_editor,True).pack(anchor="w",pady=8)
+        self.button(p,"Modül Seç",lambda:self.go(PAGES[2])).pack(anchor="w")
         p=self.box("Gerçek CLI Çıktıları")
         self.artifact_table(p)
 

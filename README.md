@@ -444,3 +444,8 @@ P8-E03 açıklanabilir kanıt raporu. Gerçek cihaz doğrulaması en son.
 ## P9-I01 — Masaüstü ve modül entegrasyonu (v0.29.0)
 
 `pip install -e ".[dev,desktop]"` ardından `fakeproof-desktop` ile dokuz sayfalı çevrimdışı arayüz çalıştırılır. P1–P7'nin 24 fizik motoru ve E01–E03, ölçüm manifestleriyle CLI köprüsü üzerinden çağrılır. [Kapsam ve sınırlar](docs/P9_I01_DESKTOP_INTEGRATION.md). Gerçek kamera/Windows kullanıcı kabulü son aşamadadır.
+
+
+## P9-I02 — Etkileşimli çizim ve kalibrasyon editörü (v0.30.0)
+
+Kalibrasyon ve Fiziksel Ölçümler ekranlarından görüntü üzerinde nokta, çizgi, çoklu çizgi, çokgen ve ROI çizilebilir; pan, zoom, düzenleme, undo/redo, piksel ölçümü, SHA-256 kaynak kilidi ve yerel anotasyon JSON saklama desteklenir. Kullanıcı etiketli X/Y/Z çizgi grupları G02 için **doğrulanmamış taslak** oluşturur. [Mühendislik sözleşmesi](docs/P9_I02_INTERACTIVE_ANNOTATIONS.md). Gerçek kamera metrik kabulü son aşamadadır.
