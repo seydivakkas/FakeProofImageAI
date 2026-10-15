@@ -78,7 +78,7 @@ def test_format_finding_preserves_raw_measurements_and_limits():
     record["explanation"]=["E"*200000]
     limited=format_finding(record)
     assert len(limited)<=MAX_PREVIEW_CHARS+150
-    assert "Tam kayıt E03 JSON'unda" in limited
+    assert "kaynak E03 JSON'unda mevcut" in limited
 
 
 def test_json_is_never_parsed_as_probability():
