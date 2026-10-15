@@ -470,3 +470,12 @@ Windows çevrimdışı PyInstaller `--onedir` **derleme betiği**: `scripts/buil
 ## P9-I05 — Tek kullanıcı akışı (v0.33.0)
 
 Yerel proje seçimi, gerçek kayıtlara bağlı beş adımlı gezinme bandı, seçili görüntü–anotasyon ve koşum–kanıt–rapor yönlendirmesi. Otomatik test PASS, gerçek kamera kabulü değildir. [Teknik belge](docs/P9_I05_UNIFIED_DESKTOP_JOURNEY.md).
+
+
+## P9-I06 — Birleşik kullanıcı akışı (v0.34.0)
+
+Koyu temalı ana ekranda gerçek proje sayaçları, doğrulanmış görüntü hash önizlemesi, beş aşamalı gezinme ve E01→E02→E03 kontrollü sentetik deney düğmesi. Bütün fiziksel modüller kendi manifest/kalibrasyon gereksinimlerini korur; tek görüntüden otomatik AI kökeni kararı verilmez.
+
+`python scripts/p9_i06_synthetic_e2e.py --workspace outputs/p9_i06_demo`
+
+Ayrıntılar: [P9-I06 teknik notu](docs/P9_I06_FINAL_UI_AND_SYNTHETIC_JOURNEY.md).

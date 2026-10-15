@@ -179,7 +179,8 @@ class DesktopApp(tk.Tk):
                 self.err(e)
 
     def screen_0(self):
-        render_home_dashboard(self)
+        from .integration_ui import render_unified_home
+        render_unified_home(self)
 
     def screen_1(self):
         p=self.box("Görüntü Yükleme ve SHA-256 Envanteri")
