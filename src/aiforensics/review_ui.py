@@ -216,6 +216,7 @@ class ReviewWindow(tk.Toplevel):
         self.findings_list.pack(fill='both',expand=True,pady=7)
         self.findings_list.bind('<<ListboxSelect>>',self._finding_chosen)
         self._button(left,'Seçili Bulgu ↔ Görüntü Bağla',self._bind_image).pack(fill='x',pady=8)
+        self._button(left,'Seçili Bulguda Görüntü Bölgesine Git',self._focus_finding).pack(fill='x',pady=8)
         self._label(left,'Bağlantı kullanıcı beyanıdır;\nözgün görüntü kanıtı değildir.',10,GREY).pack(anchor='w')
         right=tk.Frame(self.finding_tab,bg=PANEL,padx=12,pady=10)
         right.pack(side='left',fill='both',expand=True)
@@ -272,6 +273,23 @@ class ReviewWindow(tk.Toplevel):
             f=next(f for f in self.findings if f['record_id']==self.record_id)
             self._show_finding(f)
         except (ReviewError,OSError,ValueError) as exc:self._error(exc)
+
+    def _focus_finding(self):
+        """Open only an explicitly linked user-provenance ROI, no automatic localization."""
+        if self.report_index is None or self.record_id is None or self.image_index is None:
+            return self._error(ReviewError('E03 kaydı ve proje görüntüsü seçilmeli'))
+        report_id=self.reports[self.report_index]['id']
+        digest=self.images[self.image_index]['sha256']
+        from .review_workspace import linked_images
+        links=linked_images(self.project,report_id,self.record_id)
+        if not any(x.get('sha256')==digest and
+                   x.get('provenance')=='user_asserted_not_verified' for x in links):
+            return self._error(ReviewError('Önce bu bulguyu seçili görüntüye elle bağlayın'))
+        try:
+            from .focus_view_ui import FindingFocusWindow
+            FindingFocusWindow(self,self.project,report_id,self.record_id,digest)
+        except (ReviewError,ValueError,OSError,TypeError,ImportError) as exc:
+            self._error(exc)
 
     def _make_graph_tab(self):
         upper=tk.Frame(self.graph_tab,bg=PANEL,padx=8,pady=8);upper.pack(fill='x')

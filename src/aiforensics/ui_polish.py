@@ -243,6 +243,8 @@ def render_calibration(app):
         _action(app,box,caption,lambda m=mid:app.choose_module(m))
     _label(box,"Özgün görüntü ve kalibrasyon ölçümleri ayrı kayıtlar olarak tutulur.",
            9,MUTED,wrap=270).pack(anchor="w",pady=6)
+    from .science_panel_ui import attach_calibration
+    attach_calibration(app)
 
 
 def render_measurements(app):
@@ -272,6 +274,8 @@ def render_measurements(app):
     else:
         _label(history,"Henüz E03 ölçüm özeti yok. Grafik/veri noktası uydurulmaz.",
                10,MUTED).pack(anchor="w")
+    from .science_panel_ui import attach_residuals
+    attach_residuals(app)
 
 
 def render_evidence(app):
