@@ -498,3 +498,10 @@ Sekiz P1–P8 modül kartı ve kaynaklı koşum durumları, seçili görüntü �
 G01/G02 VP ve K görünümleri, G04 train/holdout reprojeksiyon hataları, birim ayrımlı E03 artık/belirsizlik grafikleri, kullanıcı ROI ile bulgu-görüntü odağı eklendi. [Mühendislik sözleşmesi](docs/P9_I09_SOURCE_BACKED_SCIENTIFIC_VIEWS.md). [Sentetik ekran CI](https://github.com/seydivakkas/FakeProofImageAI/actions/workflows/p9-i09-scientific-screens.yml).
 
 **Gerçek fotoğraf, kamera kalibrasyonu, hata oranı ve gerçek Windows kullanıcı kabulü en son aşamada.**
+
+
+## P9-I10 — Son rapor, grafik ve klavye arayüz paketi (v0.38.0)
+
+E03 raporları 40-kayıt sayfalama, metin/durum filtreleri, açıklama veya kaynak JSON görünümü; bağımlılık grafiğinde yakınlaştırma/kaydırma/odak, G04 ve E03 grafiklerinde veri sayfalaması içerir. [Arayüz kabul ve sınırları](docs/P9_I10_FINAL_UI_ACCESSIBILITY.md). [P10 bağımsız doğrulama protokolü](docs/P10_INDEPENDENT_VALIDATION_GATE.md).
+
+**P10 gerçek kamera, bağımsız fotoğraf, Windows 10/11 kullanıcı kabulü başlatılmadı.**
