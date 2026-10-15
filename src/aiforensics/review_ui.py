@@ -18,9 +18,20 @@ NAV = '#0d1e30'; BG = '#0a1420'; PANEL = '#142639'; FG = '#eef6ff'
 CYAN = '#19c5ff'; BLUE = '#1976d2'; GREY = '#abbfd1'
 
 
+def initial_image_index(images, selected_sha=None):
+    """Find user-selected image. A stale explicit SHA must NOT select another."""
+    if not images:
+        return None
+    if selected_sha is None:
+        return 0
+    matches=[i for i,item in enumerate(images) if item.get("sha256")==selected_sha]
+    return matches[0] if len(matches)==1 else None
+
+
 class ReviewWindow(tk.Toplevel):
     """One review window: explicit review links and layer visibility per image."""
-    def __init__(self, master, project, *, tab='Görsel Katmanlar'):
+    def __init__(self, master, project, *, tab='Görsel Katmanlar',
+                 initial_image_sha=None):
         super().__init__(master)
         self.project = project
         self.title('FakeProofImageAI — P9-I04 Görsel / Kanıt / Rapor Gezgini')
@@ -39,7 +50,11 @@ class ReviewWindow(tk.Toplevel):
         self._build()
         self.tabs.select({'Görsel Katmanlar':0, 'Kanıt İnceleme':1,
                           'Bağımlılık Grafiği':2, 'Rapor Gezgini':3}.get(tab,0))
-        if self.images:self.select_image(0)
+        first=initial_image_index(self.images,initial_image_sha)
+        if first is not None:
+            self.select_image(first)
+        elif initial_image_sha is not None:
+            self.status.set("Seçili görüntü projede tekil değil veya bulunamadı; kaynak seçiniz")
         if self.reports:self.select_report(0)
 
     def _button(self, parent, title, action):

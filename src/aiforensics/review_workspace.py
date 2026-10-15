@@ -70,16 +70,30 @@ def list_images(project):
 
 
 def annotation_layers(project, image_sha):
+    """Read I02 canonical manifests and older I04 annotation folders safely.
+
+    Pixel annotations are never metric calibration or camera-provenance proof.
+    """
     path, _ = _image_match(project, image_sha)
+    try:
+        from PIL import Image
+        with Image.open(path) as actual:
+            image_wh = actual.size
+    except (OSError, ValueError) as exc:
+        raise ReviewError('Görüntü boyutu doğrulanamadı') from exc
     output = []
-    annotation_root = project.root / 'annotations'
-    if not annotation_root.exists():
-        return output
-    for candidate in sorted(annotation_root.glob('*.json'))[:5000]:
+    manifest_root = project.root / 'manifests'
+    canonical = manifest_root / ('annotations_' + image_sha + '.json')
+    candidates = [canonical] if canonical.is_file() and not canonical.is_symlink() else []
+    legacy_root = project.root / 'annotations'
+    if legacy_root.is_dir() and not legacy_root.is_symlink():
+        candidates.extend(sorted(legacy_root.glob('*.json'))[:5000])
+    for candidate in candidates:
         if candidate.is_symlink() or candidate.stat().st_size > 16*1024*1024:
             continue
         try:
-            doc = AnnotationDocument.load(candidate, image_sha256=image_sha)
+            doc = AnnotationDocument.load(candidate, image_sha256=image_sha,
+                                          image_size_wh=image_wh)
         except (OSError, ValueError, AnnotationError):
             continue
         output.append({'id': candidate.name, 'path': candidate,

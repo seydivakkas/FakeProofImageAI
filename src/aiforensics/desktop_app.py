@@ -121,12 +121,42 @@ class DesktopApp(tk.Tk):
             self.nav[title]=b
         tk.Frame(sidebar,bg=NAV).pack(expand=True)
         self.label(sidebar,"P1–P8 · Koşullu kanıt",9,MUTED).pack(pady=14)
-        self.page=tk.Frame(middle,bg=BG,padx=25,pady=15)
-        self.page.pack(side="left",fill="both",expand=True)
+        # P9-I07: small screens retain every page section via a scrollable workspace.
+        self.page_shell=tk.Frame(middle,bg=BG)
+        self.page_shell.pack(side="left",fill="both",expand=True)
+        self.page_scrollbar=ttk.Scrollbar(self.page_shell,orient="vertical")
+        self.page_scrollbar.pack(side="right",fill="y")
+        self.page_canvas=tk.Canvas(self.page_shell,bg=BG,bd=0,highlightthickness=0,
+                                   yscrollcommand=self.page_scrollbar.set)
+        self.page_canvas.pack(side="left",fill="both",expand=True)
+        self.page_scrollbar.configure(command=self.page_canvas.yview)
+        self.page=tk.Frame(self.page_canvas,bg=BG,padx=18,pady=12)
+        self.page_window=self.page_canvas.create_window((0,0),window=self.page,anchor="nw")
+        self.page.bind("<Configure>",lambda event:
+                       self.page_canvas.configure(scrollregion=self.page_canvas.bbox("all")))
+        self.page_canvas.bind("<Configure>",lambda event:
+                              self.page_canvas.itemconfigure(self.page_window,width=event.width))
+        self.page_canvas.bind("<MouseWheel>",self._scroll_page)
+        self.page_canvas.bind("<Button-4>",lambda e:self.page_canvas.yview_scroll(-3,"units"))
+        self.page_canvas.bind("<Button-5>",lambda e:self.page_canvas.yview_scroll(3,"units"))
+        self.bind("<Control-Key-n>",lambda event:self.new_project())
+        self.bind("<Control-Key-o>",lambda event:(self.go(PAGES[1]),self.import_images()))
+        self.bind("<F5>",lambda event:self.go(self.active_page))
+        for position,page in enumerate(PAGES,1):
+            self.bind(f"<Control-Key-{position}>",lambda event,p=page:self.go(p))
+        self.bind("<Prior>",lambda event:self.page_canvas.yview_scroll(-1,"pages"))
+        self.bind("<Next>",lambda event:self.page_canvas.yview_scroll(1,"pages"))
         tk.Label(self,textvariable=self.status,bg=NAV,fg=MUTED,
                  anchor="w",padx=22,pady=7).pack(fill="x")
 
+    def _scroll_page(self,event):
+        delta=getattr(event,"delta",0)
+        if delta:
+            self.page_canvas.yview_scroll(-3 if delta>0 else 3,"units")
+
     def go(self,title):
+        if title not in PAGES:
+            raise ValueError("Kayıtlı olmayan masaüstü sayfası")
         self.active_page=title
         for child in self.page.winfo_children():
             child.destroy()
@@ -135,6 +165,7 @@ class DesktopApp(tk.Tk):
         self.label(self.page,title,21,INK,True).pack(anchor="w",pady=(0,8))
         render_workflow_strip(self)
         getattr(self,"screen_"+str(PAGES.index(title)))()
+        self.page_canvas.yview_moveto(0)
 
     def err(self,error):
         self.status.set(str(error))
@@ -369,7 +400,8 @@ class DesktopApp(tk.Tk):
 
     def open_review(self, tab='Görsel Katmanlar'):
         from .review_ui import ReviewWindow
-        ReviewWindow(self, self.project, tab=tab)
+        ReviewWindow(self, self.project, tab=tab,
+                     initial_image_sha=self.selected_asset_sha)
 
     def screen_4(self):
         p=self.box("Fiziksel Ölçümler")
@@ -462,7 +494,8 @@ class DesktopApp(tk.Tk):
             ("Bulut/API bağlantısı","YOK"),
             ("Gerçek fotoğraf performansı","ÖLÇÜLMEDİ"),
             ("Windows son kullanıcı kabulü","SON AŞAMA"),
-            ("AI kökeni kararı","HESAPLANMIYOR")]:
+            ("AI kökeni kararı","HESAPLANMIYOR"),
+            ("Klavye kısayolları","Ctrl+1–9: sayfa · Ctrl+N: proje · Ctrl+O: görüntü · F5: yenile · PgUp/PgDn: kaydır")]:
             self.label(p,title+": "+value,11).pack(anchor="w",pady=9)
 
 

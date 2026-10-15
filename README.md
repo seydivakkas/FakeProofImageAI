@@ -479,3 +479,10 @@ Koyu temalı ana ekranda gerçek proje sayaçları, doğrulanmış görüntü ha
 `python scripts/p9_i06_synthetic_e2e.py --workspace outputs/p9_i06_demo`
 
 Ayrıntılar: [P9-I06 teknik notu](docs/P9_I06_FINAL_UI_AND_SYNTHETIC_JOURNEY.md).
+
+
+## P9-I07 — Tasarım maketleriyle uyum ve ergonomi kontrolü (v0.35.0)
+
+Ana ekran artık kaydırılabilir; Ctrl+1..9 sayfa, Ctrl+O görüntü, Ctrl+N proje, F5 yenileme. I02 ile kaydedilmiş görüntü anotasyonları, I04 katman gezgininde aynı SHA-256 ve piksel çözünürlüğüyle açılır; seçilen görüntü inceleme penceresine doğru aktarılır. [Görsel fark matrisi ve açık kabul maddeleri](docs/P9_I07_UI_ERGONOMICS.md).
+
+**Sınır:** Maketlere piksel düzeyinde birebir eşitlik, gerçek Windows kullanıcı kabulü ve gerçek kamera doğrulaması iddia edilmez.
