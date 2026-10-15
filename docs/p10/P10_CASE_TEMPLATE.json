@@ -1,0 +1,76 @@
+{
+  "schema_version": "fakeproof.p10.case.v1",
+  "case_id": null,
+  "gate_id": null,
+  "status": "NOT_STARTED",
+  "scope": "INDEPENDENT_REAL_VALIDATION_PENDING",
+  "preregistration": {
+    "protocol_id": null,
+    "protocol_sha256": null,
+    "registered_utc": null,
+    "registered_by_role": null,
+    "thresholds_fixed_before_holdout": false,
+    "holdout_opened": false
+  },
+  "dataset": {
+    "asset_id": null,
+    "capture_type": null,
+    "session_id": null,
+    "scene_group_id": null,
+    "camera_pseudonym": null,
+    "device_model": null,
+    "lens_model": null,
+    "timestamp_utc": null,
+    "original_sha256": null,
+    "original_private_storage_reference": null,
+    "usage_rights_reference": null,
+    "raw_vs_processed": null,
+    "source_reviewer_role": null
+  },
+  "metrology": {
+    "independent_reference_id": null,
+    "calibration_certificate_reference": null,
+    "reference_sha256": null,
+    "measurement_method": null,
+    "measurement_unit": null,
+    "measurement_uncertainty": null,
+    "reviewer_role": null
+  },
+  "independence": {
+    "train_ids": [],
+    "reference_ids": [],
+    "holdout_ids": [],
+    "camera_scene_session_leakage_checked": false,
+    "audit_sha256": null
+  },
+  "execution": {
+    "repo_commit_sha": null,
+    "environment_lock_sha256": null,
+    "os_version": null,
+    "machine_pseudonym": null,
+    "run_command": null,
+    "run_log_sha256": null,
+    "result_sha256": null
+  },
+  "result": {
+    "metric_name": null,
+    "value": null,
+    "unit": null,
+    "confidence_interval_method": null,
+    "lower": null,
+    "upper": null,
+    "n_observations": null,
+    "n_independent_groups": null,
+    "abstentions": null,
+    "exceptions": []
+  },
+  "review": {
+    "reviewer_role": null,
+    "decision_utc": null,
+    "review_document_sha256": null,
+    "blocking_reasons": [
+      "No real measurement or independent acceptance result supplied"
+    ]
+  },
+  "decision": "NO_AI_ORIGIN_CONCLUSION"
+}
