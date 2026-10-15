@@ -1,0 +1,43 @@
+name: P9-I09 scientific UI synthetic gallery
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/p9-i09-scientific-screens.yml"
+      - "scripts/p9_i09_synthetic_screens.py"
+      - "src/aiforensics/science_panel_ui.py"
+      - "src/aiforensics/focus_view_ui.py"
+
+jobs:
+  synthetic-scientific-panels:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    strategy:
+      fail-fast: false
+      matrix:
+        geometry:
+          - {width: 1366, height: 768}
+          - {width: 1920, height: 1080}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install virtual screen
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb xauth python3-tk
+      - name: Install project
+        run: python -m pip install -e ".[desktop,dev]"
+      - name: Run actual physics CLI on controlled synthetic fixtures and capture GUI
+        run: >
+          xvfb-run -a -s "-screen 0 2200x1300x24"
+          python scripts/p9_i09_synthetic_screens.py
+          --out outputs/p9_i09_visuals/${{ matrix.geometry.width }}x${{ matrix.geometry.height }}
+          --width ${{ matrix.geometry.width }}
+          --height ${{ matrix.geometry.height }}
+      - name: Upload auditable UI captures
+        uses: actions/upload-artifact@v4
+        with:
+          name: P9-I09-scientific-ui-${{ matrix.geometry.width }}x${{ matrix.geometry.height }}
+          path: outputs/p9_i09_visuals/
+          retention-days: 30
