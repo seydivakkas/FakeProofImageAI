@@ -324,20 +324,8 @@ class DesktopApp(tk.Tk):
         self.go(PAGES[2])
 
     def screen_3(self):
-        p=self.box("Kalibrasyon Yönetimi")
-        self.label(p,"G02, G04 ve O01 bağımsız geometrik veri gerektirir.",
-                   11,MUTED).pack(anchor="w",pady=8)
-        self.button(p,"Görüntü Üzerinde Kalibrasyon Çiz",self.open_annotation_editor,True).pack(anchor="w",pady=6)
-        self.button(p,"Kalibrasyon JSON Ekle",self.add_calibration).pack(anchor="w",pady=6)
-        self.button(p,"Modüle Özel Kalibrasyon Formları",
-                    self.open_workflow).pack(anchor="w",pady=6)
-        self.label(p,"Seçili kalibrasyon: "+str(self.project.data.get("calibration") or "YOK"),
-                   10,MUTED).pack(anchor="w")
-        for module,label in [("P1-G02","Kaçış noktaları"),("P1-G04","Homografi"),
-                             ("P4-O01","Lens bozulması")]:
-            self.button(p,label,lambda m=module:self.choose_module(m)).pack(anchor="w",pady=5)
-        self.label(self.page,"Bir JSON kaydı bağımsız kalibrasyon doğrulaması değildir.",
-                   10,MUTED).pack(anchor="w")
+        from .ui_polish import render_calibration
+        render_calibration(self)
 
     def open_annotation_editor(self):
         """P9-I02 native-image coordinate editor; annotations are not 3D truth."""
@@ -404,30 +392,12 @@ class DesktopApp(tk.Tk):
                      initial_image_sha=self.selected_asset_sha)
 
     def screen_4(self):
-        p=self.box("Fiziksel Ölçümler")
-        self.button(p,"P9-I04 Görsel Katmanlar ve Ölçüm Gezgini",
-                    lambda:self.open_review("Görsel Katmanlar"),True).pack(anchor="w",pady=6)
-        self.label(p,"P1 Geometri · P2 Gölge · P3 Yansıma · P4 Optik · P5 3B · P6 Malzeme · P7 Sensör",
-                   11,MUTED).pack(anchor="w",pady=9)
-        self.button(p,"Görüntü Üzerinde Fiziksel Ölçüm Yap",self.open_annotation_editor,True).pack(anchor="w",pady=8)
-        self.button(p,"Modül Formları ve Ölçüm Planlayıcısı",
-                    self.open_workflow,True).pack(anchor="w",pady=6)
-        self.button(p,"Modül Seç",lambda:self.go(PAGES[2])).pack(anchor="w")
-        p=self.box("Gerçek CLI Çıktıları")
-        self.artifact_table(p)
+        from .ui_polish import render_measurements
+        render_measurements(self)
 
     def screen_5(self):
-        p=self.box("E01 Tekil Kanıt · E02 Bağımlı Birleşim · E03 Açıklanabilir Rapor")
-        self.button(p,"P9-I04 Bulgu–Görüntü ve Kanıt Gezgini",
-                    lambda:self.open_review("Kanıt İnceleme"),True).pack(anchor="w",pady=6)
-        b=tk.Frame(p,bg=PANEL)
-        b.pack(anchor="w",pady=12)
-        for module in ("P8-E01","P8-E02","P8-E03"):
-            self.button(b,module,lambda m=module:self.choose_module(m)).pack(side="left",padx=8)
-        self.label(p,"P-değeri AI-köken olasılığı değildir; ret özgünlük kararı üretmez.",
-                   10,MUTED).pack(anchor="w")
-        p=self.box("Çalışılmış Kanıt Kayıtları")
-        self.artifact_table(p,True)
+        from .ui_polish import render_evidence
+        render_evidence(self)
 
     def screen_6(self):
         p=self.box("E02 / E03 Bağımlılık Grafiği (gerçek lineage grupları)")

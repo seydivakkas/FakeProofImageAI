@@ -218,6 +218,8 @@ def render_overview(app):
     _action(app,row,"Kanıt gezgini",lambda:app.open_review("Kanıt İnceleme"),side="left")
     _action(app,row,"Bağımlılıklar",lambda:app.open_review("Bağımlılık Grafiği"),side="left")
     _action(app,row,"Rapor dışa aktar",lambda:app.go("Rapor Dışa Aktarma"),side="left")
+    from .integration_ui import run_synthetic_from_ui
+    _action(app,row,"Kontrollü sentetik E01→E03",lambda:run_synthetic_from_ui(app),side="left")
 
 
 def render_calibration(app):
