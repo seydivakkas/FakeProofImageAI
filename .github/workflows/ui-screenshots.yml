@@ -1,0 +1,38 @@
+name: P9-I07 synthetic UI screenshots
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/ui-screenshots.yml"
+      - "src/aiforensics/desktop_app.py"
+      - "src/aiforensics/integration_ui.py"
+      - "src/aiforensics/journey_ui.py"
+      - "src/aiforensics/review_ui.py"
+      - "scripts/p9_i07_capture_ui.py"
+
+jobs:
+  offline-ui-snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install virtual display
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq xvfb xauth python3-tk
+      - name: Install offline desktop requirements
+        run: python -m pip install -e ".[desktop,dev]"
+      - name: Capture 1366 x 768 synthetic UI
+        run: xvfb-run -a -s "-screen 0 2000x1200x24" python scripts/p9_i07_capture_ui.py --out outputs/p9_i07_ui/1366x768 --width 1366 --height 768
+      - name: Capture 1920 x 1080 synthetic UI
+        run: xvfb-run -a -s "-screen 0 2000x1200x24" python scripts/p9_i07_capture_ui.py --out outputs/p9_i07_ui/1920x1080 --width 1920 --height 1080
+      - name: Publish UI screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: P9-I07-synthetic-Tkinter-UI-screenshots
+          path: outputs/p9_i07_ui/
+          retention-days: 30
