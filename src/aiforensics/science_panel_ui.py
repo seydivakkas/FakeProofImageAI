@@ -104,10 +104,10 @@ def navigable_chart(root,items,unit,renderer,limit,threshold=None):
     def paint():
         if current[0]>=len(items) and items:
             current[0]=max(0,((len(items)-1)//limit)*limit)
-        if threshold is None:
-            renderer(c,items,unit,current[0])
-        else:
+        if renderer is show_holdout:
             renderer(c,items,threshold,current[0])
+        else:
+            renderer(c,items,unit,current[0])
         label.set(
             f"Kaynak veri: {min(current[0]+1,len(items))}-{min(current[0]+limit,len(items))}"
             f" / {len(items)} · yalnız çizim aralığı değişir")
