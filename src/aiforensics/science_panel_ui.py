@@ -41,7 +41,11 @@ def show_vps(c,points):
     for i,(x,y) in enumerate(points):
         px=60+(x-xlo)/dx*(w-100);py=18+(y-ylo)/dy*(h-70)
         c.create_oval(px-5,py-5,px+5,py+5,fill=CYAN,outline="")
-        c.create_text(px+7,py-9,anchor="w",text=f"VP{i+1}: {x:.1f},{y:.1f} px",fill=INK)
+        label=f"VP{i+1}: {x:.1f},{y:.1f} px"
+        if px>w-240:
+            c.create_text(px-8,py+12 if py<30 else py-9,anchor="e",text=label,fill=INK)
+        else:
+            c.create_text(px+7,py+12 if py<30 else py-9,anchor="w",text=label,fill=INK)
     c.create_text(w-15,h-13,anchor="e",text="Görüntü koordinatları: px",fill=MUTED)
 
 def show_holdout(c,errors,threshold):
