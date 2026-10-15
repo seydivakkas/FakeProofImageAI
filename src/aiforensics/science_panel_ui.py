@@ -115,6 +115,10 @@ def attach_calibration(app):
             c=chart(frame)
             c.bind("<Configure>",lambda event,c=c,d=item:
                 show_holdout(c,d.get("errors_px",[]),d.get("holdout_threshold_px")))
+    for i,mid in enumerate(("P1-G01","P1-G02","P1-G04")):
+        if mid in by:
+            tabs.select(i)
+            break
     return by
 
 def attach_residuals(app):
