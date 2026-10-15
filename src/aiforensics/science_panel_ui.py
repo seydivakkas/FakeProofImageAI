@@ -48,13 +48,13 @@ def show_vps(c,points):
             c.create_text(px+7,py+12 if py<30 else py-9,anchor="w",text=label,fill=INK)
     c.create_text(w-15,h-13,anchor="e",text="Görüntü koordinatları: px",fill=MUTED)
 
-def show_holdout(c,errors,threshold):
+def show_holdout(c,errors,threshold,start=0):
     c.delete("all");w=max(c.winfo_width(),360);h=max(c.winfo_height(),218)
     axes(c,w,h)
     if not errors:
         c.create_text(w/2,h/2,text="Bağımsız holdout hata dizisi yok",fill=MUTED)
         return
-    series=errors[:300]
+    series=errors[start:start+300]
     maximum=max(max(series),threshold or 0,1e-6)*1.2
     for i,val in enumerate(series):
         x=58+(i+.5)*(w-76)/len(series)
@@ -64,15 +64,15 @@ def show_holdout(c,errors,threshold):
         y=h-34-threshold/maximum*(h-60)
         c.create_line(56,y,w-15,y,fill=AMBER,dash=(5,3))
         c.create_text(w-18,y-9,anchor="e",text=f"Beyan eşiği {threshold:.3g} px",fill=AMBER)
-    c.create_text(w-15,h-12,anchor="e",text="Holdout ölçüm sırası",fill=MUTED)
+    c.create_text(w-15,h-12,anchor="e",text=f"Holdout ölçümü {start+1}-{start+len(series)}/{len(errors)}",fill=MUTED)
 
-def show_residuals(c,items,unit):
+def show_residuals(c,items,unit,start=0):
     c.delete("all");w=max(c.winfo_width(),540);h=max(c.winfo_height(),235)
     axes(c,w,h,left=98)
     if not items:
         c.create_text(w/2,h/2,text="Bu birimde ölçüm yok",fill=MUTED)
         return
-    series=items[:24];bounds=[0.0]
+    series=items[start:start+24];bounds=[0.0]
     for r in series:
         bounds.append(r["residual"])
         if r["ci95"] is not None:bounds+=r["ci95"]
@@ -93,7 +93,43 @@ def show_residuals(c,items,unit):
         c.create_oval(x-4,y-4,x+4,y+4,fill=CYAN,outline="")
     c.create_text(w-14,h-13,anchor="e",text=f"Artık ({unit}) · 95% aralık yalnız kaynakta varsa",fill=MUTED)
     if len(items)>len(series):
-        c.create_text(w-14,16,anchor="ne",text=f"İlk {len(series)}/{len(items)}",fill=AMBER)
+        c.create_text(w-14,16,anchor="ne",text=f"{start+1}-{start+len(series)}/{len(items)}",fill=AMBER)
+
+def navigable_chart(root,items,unit,renderer,limit,threshold=None):
+    """Source-preserving chart window with keyboard paging and a visible counter."""
+    bar=tk.Frame(root,bg=PANEL);bar.pack(fill="x",pady=3)
+    c=chart(root);c.configure(takefocus=True)
+    current=[0]
+    label=tk.StringVar(value="")
+    def paint():
+        if current[0]>=len(items) and items:
+            current[0]=max(0,((len(items)-1)//limit)*limit)
+        if threshold is None:
+            renderer(c,items,unit,current[0])
+        else:
+            renderer(c,items,threshold,current[0])
+        label.set(
+            f"Kaynak veri: {min(current[0]+1,len(items))}-{min(current[0]+limit,len(items))}"
+            f" / {len(items)} · yalnız çizim aralığı değişir")
+    def move(direction):
+        value=current[0]+direction*limit
+        if 0<=value<max(1,len(items)):
+            current[0]=value
+            paint()
+    tk.Button(bar,text="◀ Önceki",command=lambda:move(-1),bg="#1976d2",
+              fg="white",relief="flat").pack(side="left",padx=5)
+    tk.Button(bar,text="Sonraki ▶",command=lambda:move(1),bg="#1976d2",
+              fg="white",relief="flat").pack(side="left",padx=5)
+    tk.Label(bar,textvariable=label,bg=PANEL,fg=MUTED,
+             font=("Segoe UI",9)).pack(side="left",padx=8)
+    c.bind("<Configure>",lambda e:paint())
+    c.bind("<Left>",lambda e:move(-1))
+    c.bind("<Right>",lambda e:move(1))
+    c.bind("<Return>",lambda e:move(1))
+    c.bind("<Button-1>",lambda e:c.focus_set())
+    root.after_idle(paint)
+    return c
+
 
 def attach_calibration(app):
     root=panel(app.page,"G01 / G02 KAÇIŞ NOKTALARI · G04 REPROJEKSİYON")
@@ -116,9 +152,8 @@ def attach_calibration(app):
         else:
             text(frame,"Train RMSE: "+str(item.get("train_reprojection_rmse_px"))+
                  " px | Holdout RMSE: "+str(item.get("holdout_reprojection_rmse_px"))+" px").pack(anchor="w")
-            c=chart(frame)
-            c.bind("<Configure>",lambda event,c=c,d=item:
-                show_holdout(c,d.get("errors_px",[]),d.get("holdout_threshold_px")))
+            navigable_chart(frame,item.get("errors_px",[]),"px",
+                show_holdout,300,item.get("holdout_threshold_px"))
     for i,mid in enumerate(("P1-G01","P1-G02","P1-G04")):
         if mid in by:
             tabs.select(i)
@@ -140,7 +175,5 @@ def attach_residuals(app):
     tabs=ttk.Notebook(root);tabs.pack(fill="x",pady=7)
     for unit,entries in list(sorted(groups.items()))[:10]:
         tab=tk.Frame(tabs,bg=PANEL);tabs.add(tab,text=unit)
-        c=chart(tab)
-        c.bind("<Configure>",lambda event,c=c,entries=entries,unit=unit:
-               show_residuals(c,entries,unit))
+        navigable_chart(tab,entries,unit,show_residuals,24)
     return groups
