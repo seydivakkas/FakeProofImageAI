@@ -88,6 +88,32 @@ def capture(root,out,width,height):
         ImageGrab.grab(bbox=(x,y,x+window.winfo_width(),y+window.winfo_height())).save(f)
         shots.append(f)
         window.destroy()
+        # P9-I10: capture real E03 review, graph controls and report index.
+        from aiforensics.review_ui import ReviewWindow
+        review=ReviewWindow(app,project,tab='Kanıt İnceleme',initial_image_sha=digest)
+        review.geometry("1180x760+0+0")
+        review.update()
+        e03_index=next(i for i,x in enumerate(review.reports)
+                       if x["schema_version"]=="p8.e03.v1")
+        review.select_report(e03_index)
+        review.finding_query.set(record_id)
+        if review.page_findings:
+            review.findings_list.selection_set(0)
+            review._finding_chosen(None)
+        for label,target in (("evidence_long_review",review.finding_tab),
+                             ("dependent_graph_navigation",review.graph_tab),
+                             ("report_index",review.report_tab)):
+            review.tabs.select(target)
+            if target==review.graph_tab:
+                review.graph_zoom=1.25
+                review._draw_graph()
+            review.update_idletasks()
+            review.update()
+            x,y=review.winfo_rootx(),review.winfo_rooty()
+            png=out/(label+".png")
+            ImageGrab.grab(bbox=(x,y,x+review.winfo_width(),y+review.winfo_height())).save(png)
+            shots.append(png)
+        review.destroy()
     finally:
         app.destroy()
     index={"schema":"p9.i09.synthetic_screenshot.v1",
