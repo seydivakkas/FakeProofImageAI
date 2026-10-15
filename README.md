@@ -491,3 +491,10 @@ Ana ekran artık kaydırılabilir; Ctrl+1..9 sayfa, Ctrl+O görüntü, Ctrl+N pr
 ## P9-I08 — Görsel arayüz iyileştirmesi (v0.36.0)
 
 Sekiz P1–P8 modül kartı ve kaynaklı koşum durumları, seçili görüntü önizlemesi ve çok panelli kalibrasyon, ölçüm ve kanıt ekranları eklendi. Gerçek kamera/Windows kullanıcı kabulü veya tasarım maketiyle birebir piksel uyumu iddia edilmez. Ayrıntılar: docs/P9_I08_HIGH_FIDELITY_UI.md.
+
+
+## P9-I09 — Kaynaklı bilimsel panel ve bulgu odaklama (v0.37.0)
+
+G01/G02 VP ve K görünümleri, G04 train/holdout reprojeksiyon hataları, birim ayrımlı E03 artık/belirsizlik grafikleri, kullanıcı ROI ile bulgu-görüntü odağı eklendi. [Mühendislik sözleşmesi](docs/P9_I09_SOURCE_BACKED_SCIENTIFIC_VIEWS.md). [Sentetik ekran CI](https://github.com/seydivakkas/FakeProofImageAI/actions/workflows/p9-i09-scientific-screens.yml).
+
+**Gerçek fotoğraf, kamera kalibrasyonu, hata oranı ve gerçek Windows kullanıcı kabulü en son aşamada.**
