@@ -7,6 +7,7 @@ on:
       - ".github/workflows/ui-screenshots.yml"
       - "src/aiforensics/desktop_app.py"
       - "src/aiforensics/integration_ui.py"
+      - "src/aiforensics/ui_polish.py"
       - "src/aiforensics/journey_ui.py"
       - "src/aiforensics/review_ui.py"
       - "scripts/p9_i07_capture_ui.py"
